@@ -1,0 +1,48 @@
+body {
+	background-color: black;
+}
+
+#gameButtonGroup {
+	margin: auto;
+	position: relative;
+	width: 615px;
+	height: 475px;
+}
+
+[data-value] {
+	width: 200px;
+	height: 230px;
+	position: absolute;
+	display: inline-block;
+	opacity: 0.5;
+}
+
+[data-value="0"] {
+	top: 20%;
+	left: 0;
+}
+
+[data-value="1"] {
+	top: 20%;
+	left: 33.60%;
+}
+
+[data-value="2"] {
+	top: 20%;
+	right: 0;
+}
+
+[data-value="3"] {
+	top: 70%;
+	left: 0;
+}
+
+[data-value="4"] {
+	top: 70%;
+	left: 33.60%;
+}
+
+[data-value="5"] {
+	top: 70%;
+	right: 0;
+}

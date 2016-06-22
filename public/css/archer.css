@@ -1,12 +1,13 @@
 body {
 	background-color: black;
+	margin-top: 0;
 }
 
 #gameButtonGroup {
-	margin: auto;
+	margin: 15px auto 0 auto;
 	position: relative;
 	width: 615px;
-	height: 475px;
+	height: 470px;
 }
 
 [data-value] {
@@ -14,37 +15,70 @@ body {
 	height: 230px;
 	position: absolute;
 	display: inline-block;
-	opacity: 0.5;
+	opacity: 0.4;
 }
 
 [data-value="0"] {
-	top: 20%;
+	top: 0;
 	left: 0;
 }
 
 [data-value="1"] {
-	top: 20%;
+	top: 0;
 	left: 33.60%;
 }
 
 [data-value="2"] {
-	top: 20%;
+	top: 0;
 	right: 0;
 }
 
 [data-value="3"] {
-	top: 70%;
+	bottom: 0;
 	left: 0;
 }
 
 [data-value="4"] {
-	top: 70%;
+	bottom: 0;
 	left: 33.60%;
 }
 
 [data-value="5"] {
-	top: 70%;
+	bottom: 0;
 	right: 0;
 }
 
-margin: 20px auto 0 auto;
+#startGame {
+	display: inline-block;
+	background-color: #48f100;
+	font-family: sans-serif;
+	font-weight: bold;
+	font-size: 1.25em;
+	color: black;
+	width: 307px;
+	height: 50px;
+	border: 1px dashed gray;
+	position: absolute;
+	right: 0;
+}
+
+#stats {
+	border: 1px dashed gray;
+	display: inline-block;
+	width: 307px;
+	height: 48px;
+	position: absolute;
+	left: 0;
+}
+
+#archerbanner {
+	margin: 10px auto 0 auto;
+	display: block;
+}
+
+#gameConsole {
+	margin: 0 auto 0 auto;
+	width: 615px;
+	height: 50px;
+	position: relative;
+}

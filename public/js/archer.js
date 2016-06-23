@@ -2,46 +2,67 @@
 
 $(document).ready(function() {
 
+var game = {
+	level: 1,
+	roundSequence: [],
+}
+
 var index = 0;
-	var game = {
-		level: 1,
-		roundSequence: [], // random button sequence for 1 round
-		// userSequence: [], // user button sequence for the same round
-	}
 
 var gameButtonsArray = $("*[data-value]");
 var message = $("#message");
 var levelNumber = $("#levelnumber");
 
 function generateRandom(randomNumber){
-	var randomNumber = Math.floor(Math.random() * 5) + 0;
+	game.roundSequence = [];
 	
 	setTimeout(function(){
-		game.roundSequence = [];
-		console.log(game.roundSequence);
-
 		do {
-			game.roundSequence.push(randomNumber);
+			game.roundSequence.push(Math.floor(Math.random() * 5) + 0);
 		} while (game.roundSequence.length < game.level);
 		console.log(game.roundSequence);
 		lightItUp();
 
-	}, 1000);
+	}, 500);
 }
-
 
 function lightItUp(){
-	game.roundSequence.forEach(function(number, index) {
-		setTimeout(function() {
-			$('[data-value="' + number + '"]').animate({
-				"opacity": "1.0"
-			}, 200).animate({
-				"opacity": "0.5"
-			}, 200), 800 * index;
-		})
-	});
-	checkUserSequence();
+	var i = 0;
+	var id = setInterval(function() {
+		$('[data-value="' + game.roundSequence[i] + '"]').animate({
+			"opacity": "1.0"
+		}, 200).animate({
+			"opacity": "0.5"
+		}, 200);
+		i++;
+		if (i == game.roundSequence.length) {
+			clearInterval(id);
+		}
+	}, 800)
 }
+
+gameButtonsArray.click(function(event) {
+	var userClick = parseInt($(this).data("value"));
+
+	if (userClick == game.roundSequence[index]) {	
+		message.html("Good...");
+		index++;
+	} else {
+		message.html("Nope. Start a new game.");
+		index = 0;
+		game.level = 1;
+		levelNumber = 1;
+	}
+
+	if (index == game.roundSequence.length) {
+		message.html("Next level!");
+		game.level += 1;
+		index = 0;
+		levelNumber.html(1 + parseInt(levelNumber.html());
+		generateRandom();		
+	}
+});
+
 
 $("*[data-value]").each(function(index, button){
 	$(this).on("click", function() {
@@ -57,26 +78,6 @@ $("#startGame").on("click", function() {
 	generateRandom();
 })
 
-$(document).mouseup(function(event) {
-	var userClick = parseInt(event.target.dataset.value);
-	return userClick;
-	checkUserSequence(event);
-});
 
-function checkUserSequence() {
-	if (event.target.dataset.value == game.roundSequence[index]) {
-		message.html("Good...");
-			index++;
-	} else {
-		message.html("Nope. Start a new game.");
-			index = 0;
-	}
-
-	if (index == (game.roundSequence.length)) {
-		game.level += 1;
-		game.roundSequence = [];
-		generateRandom();		
-	}
-}
 
 });

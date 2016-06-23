@@ -12,11 +12,10 @@ $(document).ready(function() {
 		speed: 1,
 		minSpeed: .32,
 		speedIncrement: .08,
-		roundSequence: [],
-		clickable: false
+		roundSequence: []
 	}
 
-	function generateRandom(randomNumber){
+	function generateRandom(){
 		setTimeout(function(){
 			do {
 				game.roundSequence.push(Math.floor(Math.random() * 5) + 0);
@@ -40,49 +39,52 @@ $(document).ready(function() {
 			}
 		}, 800 * game.speed)
 	}
-	
-	game.clickable = true;
 
-	if (game.clickable) {
-		$("*[data-value]").each(function(index, button){
-			$(this).on("click", function() {
-				$('[data-sound="' + index + '"]').trigger("play");
-				$(this).animate(
-					{"opacity": "1.0"}, 200).animate(
-					{"opacity": "0.5"}, 200);
-			});
-		})
-		gameButtonsArray.click(function(event) {
-			var userClick = parseInt($(this).data("value"));
-			if (userClick == game.roundSequence[index]) {	
-				message.html("Good...");
-				index++;
-			} else {
-				message.html("Nope. Start a new game.");
-				$("#soundeffect2")[0].play();
-				index = 0;
-				game.level = 1;
-			}
+	gameButtonsArray.on("click", function click(event) {
+		
+		// sound & light-up
+		$('[data-sound="' + index + '"]').trigger("play");
+		$(this).animate(
+			{"opacity": "1.0"}, 200).animate(
+			{"opacity": "0.5"}, 200);
+		
+		var userClick = parseInt($(this).data("value"));
+		
+		if (userClick == game.roundSequence[index]) {	
+			message.html("Good...");
+			index++;
+			
 			if (index == game.roundSequence.length) {
 				game.level += 1;
 				index = 0;
 				levelNumber.html(1 + parseInt(levelNumber.html()));
+
+				// every 5 levels, whoo!!
 				if (game.level % 5 == 0) { 
 					message.html(game.level + " Levels Mastered!");
 					$("#soundeffect1")[0].play();
 				} else {
 					message.html("Next level!");
 				}
+
+				// increase speed with each level mastered
 				if (game.speed <= game.minSpeed) {
 					game.speed = game.minSpeed;
 				} else {
 					game.speed -= game.speedIncrement;
 				}
-				game.clickable = false;
+
 				generateRandom();
 			}
-		});
-	}
+
+		} else {
+			message.html("Nope. Start a new game.");
+			$("#soundeffect2")[0].play();
+			index = 0;
+			game.level = 1;
+			gameButtonsArray.off("click");
+		}
+	});
 
 	$("#startGame").on("click", function() {
 		game.roundSequence = [];
@@ -91,5 +93,4 @@ $(document).ready(function() {
 		message.html("Let's go!");
 		generateRandom();
 	})
-
 });

@@ -12,85 +12,96 @@ $(document).ready(function() {
 		speed: 1,
 		minSpeed: .32,
 		speedIncrement: .08,
-		roundSequence: []
+		roundSequence: [],
+		allowUserClick: false,
+		allowStartClick: true
 	}
 
 	function generateRandom(){
+		var i = 0;
+		game.allowStartClick = false;
+		$("#startGame").css("background-color", "#347817");
+
+		// generate random numbers for game sequence
 		setTimeout(function(){
 			do {
 				game.roundSequence.push(Math.floor(Math.random() * 5) + 0);
 			} while (game.roundSequence.length < game.level);
-			lightItUp();
 		}, 400);
-	}
 
-	function lightItUp(){
-		var i = 0;
+		// sound & light-up for game sequence
 		var id = setInterval(function() {
 			$('[data-sound="' + game.roundSequence[i] + '"]').trigger("play");
 			$('[data-value="' + game.roundSequence[i] + '"]').animate({
 				"opacity": "1.0"
-			}, 200).animate({
+			}, 250).animate({
 				"opacity": "0.5"
-			}, 200);
+			}, 250);
 			i++;
 			if (i == game.roundSequence.length) {
 				clearInterval(id);
 			}
 		}, 800 * game.speed)
+
+		game.allowUserClick = true;
 	}
 
 	gameButtonsArray.on("click", function click(event) {
-		
-		// sound & light-up
-		$('[data-sound="' + index + '"]').trigger("play");
-		$(this).animate(
-			{"opacity": "1.0"}, 200).animate(
-			{"opacity": "0.5"}, 200);
-		
-		var userClick = parseInt($(this).data("value"));
-		
-		if (userClick == game.roundSequence[index]) {	
-			message.html("Good...");
-			index++;
+		if(game.allowUserClick) {
+			// sound & light-up on user click
+			$('[data-sound="' + game.roundSequence[index] + '"]').trigger("play");
+			$(this).animate(
+				{"opacity": "1.0"}, 200).animate(
+				{"opacity": "0.5"}, 200);
 			
-			if (index == game.roundSequence.length) {
-				game.level += 1;
+			var userClick = parseInt($(this).data("value"));
+			
+			if (userClick == game.roundSequence[index]) {	
+				message.html("Good...");
+				index++;
+				
+				if (index == game.roundSequence.length) {
+					game.level += 1;
+					index = 0;
+					levelNumber.html(1 + parseInt(levelNumber.html()));
+
+					// every 5 levels, whoo!!
+					if (game.level % 5 == 0) { 
+						message.html(game.level + " Levels Mastered!");
+						$("#soundeffect1")[0].play();
+					} else {
+						message.html("Next level!");
+					}
+
+					// increase speed with each level mastered
+					if (game.speed <= game.minSpeed) {
+						game.speed = game.minSpeed;
+					} else {
+						game.speed -= game.speedIncrement;
+					}
+
+					generateRandom();
+				}
+
+			} else {
+				message.html("Nope. Start a new game.");
+				game.allowUserClick = false;
+				game.allowStartClick = true;
+				$("#startGame").css("background-color", "#48f100");
+				$("#soundeffect2")[0].play();
+				game.level = 1;
 				index = 0;
-				levelNumber.html(1 + parseInt(levelNumber.html()));
-
-				// every 5 levels, whoo!!
-				if (game.level % 5 == 0) { 
-					message.html(game.level + " Levels Mastered!");
-					$("#soundeffect1")[0].play();
-				} else {
-					message.html("Next level!");
-				}
-
-				// increase speed with each level mastered
-				if (game.speed <= game.minSpeed) {
-					game.speed = game.minSpeed;
-				} else {
-					game.speed -= game.speedIncrement;
-				}
-
-				generateRandom();
 			}
-
-		} else {
-			message.html("Nope. Start a new game.");
-			$("#soundeffect2")[0].play();
-			index = 0;
-			game.level = 1;
-			gameButtonsArray.off("click");
 		}
 	});
 
 	$("#startGame").on("click", function() {
-		game.roundSequence = [];
-		$("audio")[0].pause();
-		$(levelNumber).html("1");
-		message.html("Let's go!");
-		generateRandom();
+		if (game.allowStartClick) {
+			message.html("Let's go!");
+			levelNumber.html("1");
+			game.roundSequence = [];
+			$("audio")[0].pause();
+			generateRandom();
+		}
 	})
 });

@@ -1,6 +1,6 @@
-"use strict";
-
 $(document).ready(function() {
+
+"use strict";
 
 	var index = 0;
 	var gameButtonsArray = $("*[data-value]");

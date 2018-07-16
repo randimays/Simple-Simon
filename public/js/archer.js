@@ -82,8 +82,21 @@ $(document).ready(function() {
 		generateSequenceForRound();
 	}
 
-	function resetGame() {
-		message.html("Nope. Start a new game.");
+	function isGameOver() {
+		return game.level === 50;
+	}
+
+	function getAndSetHighScore() {
+		const highestScoreSoFar = highScore.html();
+
+		if (highestScoreSoFar < game.level) {
+			highScore.html(game.level - 1);
+		}
+	}
+
+	function resetGame(gameMessage) {
+		getAndSetHighScore();
+		message.html(gameMessage);
 		game.allowUserClick = false;
 		game.allowStartClick = true;
 		$(".start-game").css("background-color", "#48f100");
@@ -104,29 +117,27 @@ $(document).ready(function() {
 				index++;
 
 				if (isRoundOver(game.roundSequence, index)) {
-					game.level += 1;
-					index = 0;
-					levelNumber.html(1 + parseInt(levelNumber.html()));
+					if (!isGameOver()) {
+						game.level += 1;
+						index = 0;
+						levelNumber.html(1 + parseInt(levelNumber.html()));
+		
+						// every 5 levels, whoo!!
+						if ((game.level - 1) % 5 == 0) { 
+							message.html((game.level - 1) + " Levels Mastered!");
+							$(".sound-effect-1")[0].play();
+						} else {
+							message.html("Next level!");
+						}
 	
-					// every 5 levels, whoo!!
-					if ((game.level - 1) % 5 == 0) { 
-						message.html((game.level - 1) + " Levels Mastered!");
-						$(".sound-effect-1")[0].play();
+						increaseSpeedForNextRound();
+						generateSequenceForRound();
 					} else {
-						message.html("Next level!");
+						resetGame("You've completed the game. Great work!");
 					}
-	
-					increaseSpeedForNextRound();
-					generateSequenceForRound();
 				}
 			} else {
-				const highestScoreSoFar = highScore.html();
-
-				if (highestScoreSoFar < game.level) {
-					highScore.html(game.level - 1);
-				}
-
-				resetGame();
+				resetGame("Nope. Start a new game.");
 			}
 		}
 	});
